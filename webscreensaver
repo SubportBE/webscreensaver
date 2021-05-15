@@ -107,6 +107,10 @@ class WebScreensaver(object):
 
 		self.browser.set_size_request(self.w, self.h)
 
+		browser_bg_color = Gdk.RGBA()
+		browser_bg_color.parse("#666")
+		self.browser.set_background_color(browser_bg_color)
+
 		self.browser.connect('load-changed', self.handle_load_changed)
 
 	def setup_cookie_jar(self):
