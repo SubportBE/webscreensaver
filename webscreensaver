@@ -61,15 +61,37 @@ class WebScreensaver(object):
 			style_provider,
 			Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
 		)
+	
+	@staticmethod
+	def _configure_transparency(c):
+		c.set_visual(c.get_screen().get_rgba_visual())
+		c.override_background_color(Gtk.StateFlags.ACTIVE, Gdk.RGBA(0, 0, 0, 0))
+		c.override_background_color(Gtk.StateFlags.BACKDROP, Gdk.RGBA(0, 0, 0, 0))
+		c.override_background_color(Gtk.StateFlags.DIR_LTR, Gdk.RGBA(0, 0, 0, 0))
+		c.override_background_color(Gtk.StateFlags.DIR_RTL, Gdk.RGBA(0, 0, 0, 0))
+		c.override_background_color(Gtk.StateFlags.FOCUSED, Gdk.RGBA(0, 0, 0, 0))
+		c.override_background_color(Gtk.StateFlags.INCONSISTENT, Gdk.RGBA(0, 0, 0, 0))
+		c.override_background_color(Gtk.StateFlags.INSENSITIVE, Gdk.RGBA(0, 0, 0, 0))
+		c.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(0, 0, 0, 0))
+		c.override_background_color(Gtk.StateFlags.PRELIGHT, Gdk.RGBA(0, 0, 0, 0))
+		c.override_background_color(Gtk.StateFlags.SELECTED, Gdk.RGBA(0, 0, 0, 0))
+		transparentWindowStyleProvider = Gtk.CssProvider()
+		transparentWindowStyleProvider.load_from_data(b"""
+		GtkWindow {
+			background-color:rgba(0,0,0,0);
+			background-image:none;
+		}""")
+		c.get_style_context().add_provider(transparentWindowStyleProvider, tk.STYLE_PROVIDER_PRIORITY_APPLICATION)		
 
 	def setup_window(self):
 		'''Perform some magic (if needed) to set up a Gtk window'''
 		if self.window_id:
 			self.win = Gtk.Window(Gtk.WindowType.POPUP)
-			self._set_window_background_color(self.win, "#00A")
+			self._configure_transparency(self.win)
 
 			gdk_display = GdkX11.X11Display.get_default()
 			self.gdk_win = GdkX11.X11Window.foreign_new_for_display(gdk_display, self.window_id)			
+			self._configure_transparency(self.gdk_win)
 
 			# We show the window so we get a Gdk Window,
 			# then we we can reparent it...
@@ -87,11 +109,12 @@ class WebScreensaver(object):
 		else:
 			self.win = Gtk.Window()
 			self.win.set_default_size(self.w, self.h)
-			self._set_window_background_color(self.win, "#00A")
+			self._configure_transparency(self.win)
 
 	def setup_browser(self):
 		'''Sets up WebKit in our window'''
 		self.browser = WebKit.WebView()
+		self._configure_transparency(self.browser)
 
 		settings = self.browser.get_settings()
 
