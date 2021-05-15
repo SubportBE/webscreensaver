@@ -49,13 +49,27 @@ class WebScreensaver(object):
 		self.w = 640
 		self.h = 480
 
+	@staticmethod
+	def _set_window_background_color(window, color):
+		# Set window background color
+		style_provider = Gtk.CssProvider()	
+		style_provider.load_from_data(
+			f"GtkWindow {{ background-color: {color}; }}".encode()
+		)
+		Gtk.StyleContext.add_provider_for_screen(
+			window.get_screen(),
+			style_provider,
+			Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+		)
+
 	def setup_window(self):
 		'''Perform some magic (if needed) to set up a Gtk window'''
 		if self.window_id:
 			self.win = Gtk.Window(Gtk.WindowType.POPUP)
+			self._set_window_background_color(self.win, "#00A")
 
 			gdk_display = GdkX11.X11Display.get_default()
-			self.gdk_win = GdkX11.X11Window.foreign_new_for_display(gdk_display, self.window_id)
+			self.gdk_win = GdkX11.X11Window.foreign_new_for_display(gdk_display, self.window_id)			
 
 			# We show the window so we get a Gdk Window,
 			# then we we can reparent it...
@@ -73,18 +87,7 @@ class WebScreensaver(object):
 		else:
 			self.win = Gtk.Window()
 			self.win.set_default_size(self.w, self.h)
-
-		# Set window background color
-		style_provider = Gtk.CssProvider()
-		color = "#666"
-		style_provider.load_from_data(
-			f"GtkWindow {{ background-color: {color}; }}".encode()
-		)
-		Gtk.StyleContext.add_provider_for_screen(
-			self.win.get_screen(),
-			style_provider,
-			Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-		)
+			self._set_window_background_color(self.win, "#00A")
 
 	def setup_browser(self):
 		'''Sets up WebKit in our window'''
