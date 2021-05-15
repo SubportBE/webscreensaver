@@ -74,6 +74,19 @@ class WebScreensaver(object):
 			self.win = Gtk.Window()
 			self.win.set_default_size(self.w, self.h)
 
+
+		# Set window background color
+        style_provider = gtk.CssProvider()
+        color = "#666"
+        style_provider.load_from_data(
+            f"GtkWindow {{ background-color: {color}; }}".encode()
+        )
+        gtk.StyleContext.add_provider_for_screen(
+            self.win.get_screen(),
+            style_provider,
+            gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+
 	def setup_browser(self):
 		'''Sets up WebKit in our window'''
 		self.browser = WebKit.WebView()
