@@ -81,7 +81,7 @@ class WebScreensaver(object):
 			background-color:rgba(0,0,0,0);
 			background-image:none;
 		}""")
-		c.get_style_context().add_provider(transparentWindowStyleProvider, tk.STYLE_PROVIDER_PRIORITY_APPLICATION)		
+		c.get_style_context().add_provider(transparentWindowStyleProvider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)		
 
 	def setup_window(self):
 		'''Perform some magic (if needed) to set up a Gtk window'''
